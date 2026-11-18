@@ -1,0 +1,9 @@
+# Local development: everything + tests, lint, DVC and the full MLflow (UI).
+-r train.txt
+-r api.txt
+mlflow==3.18.0
+dvc[s3]==3.67.1
+pytest==9.2.0
+pytest-cov==7.1.0
+httpx==0.28.1
+ruff==0.17.5

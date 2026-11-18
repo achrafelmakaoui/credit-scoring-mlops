@@ -1,0 +1,7 @@
+-r base.txt
+mlflow-skinny==3.18.0
+fastapi==0.164.0
+uvicorn==0.54.0
+pydantic==2.14.3
+prometheus-client==0.26.0
+prometheus-fastapi-instrumentator==8.1.0
