@@ -1,0 +1,5 @@
+# Shared by training and serving. Versions pinned for reproducibility (Python 3.11).
+numpy==2.4.6
+pandas==3.1.1
+scikit-learn==1.9.1
+pyyaml==6.0.3

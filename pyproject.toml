@@ -1,0 +1,17 @@
+[project]
+name = "credit-scoring-mlops"
+version = "0.1.0"
+description = "API de prédiction de scoring crédit avec MLflow et Docker (projet P2, module DevOps et MLOps)"
+requires-python = ">=3.11,<3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
