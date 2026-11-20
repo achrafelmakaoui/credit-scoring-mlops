@@ -1,0 +1,10 @@
+stages:
+  prepare:
+    cmd: python -m src.data.prepare
+    deps:
+      - src/data/prepare.py
+      - data/raw/german_credit.csv
+    params:
+      - prepare
+    outs:
+      - data/processed
