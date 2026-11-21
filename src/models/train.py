@@ -131,13 +131,15 @@ def main() -> None:
                     mlflow.log_artifact(trace)
 
             signature = infer_signature(x_train, pipeline.predict(x_train))
-            mlflow.sklearn.log_model(
+            
+            model_info = mlflow.sklearn.log_model(
                 pipeline,
                 name="model",
                 signature=signature,
                 input_example=x_train.head(5),
                 skops_trusted_types=SKOPS_TRUSTED_TYPES,
             )
+            mlflow.set_tag("model_uri", model_info.model_uri)
 
             all_metrics[name] = metrics
             print(f"{name}: " + ", ".join(f"{k}={v:.3f}" for k, v in metrics.items()))
