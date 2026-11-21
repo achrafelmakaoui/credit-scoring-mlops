@@ -1,0 +1,8 @@
+{
+  "candidate_version": "1",
+  "candidate_model": "logistic_regression",
+  "candidate_roc_auc": 0.8058,
+  "champion_version_before": null,
+  "promoted": true,
+  "reason": "aucun champion en place"
+}
