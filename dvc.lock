@@ -9,8 +9,8 @@ stages:
       size: 81067
     - path: src/data/prepare.py
       hash: md5
-      md5: 1ed0e1e95b2580f848e1911e7d8aaecb
-      size: 1238
+      md5: 24a8a2ecd9ed836f254d9c0933d780a7
+      size: 1201
     params:
       params.yaml:
         prepare:
@@ -22,3 +22,40 @@ stages:
       md5: 0d663eee05fe9c5c8076854a02254921.dir
       size: 81345
       nfiles: 2
+  train:
+    cmd: python -m src.models.train
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 0d663eee05fe9c5c8076854a02254921.dir
+      size: 81345
+      nfiles: 2
+    - path: src/features/build.py
+      hash: md5
+      md5: bbed685a0c1175a4368bf8f5d141e47b
+      size: 909
+    - path: src/models/train.py
+      hash: md5
+      md5: 8464ec3d0ccbf801dc0f617ed9dac038
+      size: 5484
+    params:
+      params.yaml:
+        train:
+          random_seed: 42
+          models:
+            logistic_regression:
+              C: 1.0
+              max_iter: 1000
+            random_forest:
+              n_estimators: 300
+              max_depth: 8
+              min_samples_leaf: 2
+            gradient_boosting:
+              n_estimators: 200
+              learning_rate: 0.05
+              max_depth: 3
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 63b99f38de4b216414e1b025d61dd5ee
+      size: 552
