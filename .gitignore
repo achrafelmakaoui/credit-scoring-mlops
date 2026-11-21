@@ -13,12 +13,6 @@ htmlcov/
 # Secrets — never commit
 .env
 
-# Data: versioned with DVC, not Git (DVC adds the matching .gitignore entries)
-/data/raw/*
-/data/processed/*
-!/data/raw/.gitkeep
-!/data/processed/.gitkeep
-
 # MLflow local artifacts and models
 mlruns/
 mlartifacts/
