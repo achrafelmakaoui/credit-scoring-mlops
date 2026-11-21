@@ -32,12 +32,12 @@ stages:
       nfiles: 2
     - path: src/features/build.py
       hash: md5
-      md5: bbed685a0c1175a4368bf8f5d141e47b
-      size: 909
+      md5: 4013360b100a4240d08b7ae14bc48450
+      size: 870
     - path: src/models/train.py
       hash: md5
-      md5: 8464ec3d0ccbf801dc0f617ed9dac038
-      size: 5484
+      md5: 0c08bd69f7c8ffb8c662a0ddbfdc610c
+      size: 5409
     params:
       params.yaml:
         train:
@@ -59,3 +59,23 @@ stages:
       hash: md5
       md5: 63b99f38de4b216414e1b025d61dd5ee
       size: 552
+  evaluate:
+    cmd: python -m src.models.evaluate
+    deps:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 63b99f38de4b216414e1b025d61dd5ee
+      size: 552
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: ff00aa8a26615ebb0e601b40ad81e18b
+      size: 4438
+    params:
+      params.yaml:
+        evaluate:
+          min_auc: 0.7
+    outs:
+    - path: reports/promotion.json
+      hash: md5
+      md5: 0202537422ad49f7c362772d459f5832
+      size: 206

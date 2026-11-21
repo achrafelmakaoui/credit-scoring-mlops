@@ -20,3 +20,14 @@ stages:
     metrics:
       - reports/metrics.json:
           cache: false
+
+  evaluate:
+    cmd: python -m src.models.evaluate
+    deps:
+      - src/models/evaluate.py
+      - reports/metrics.json
+    params:
+      - evaluate
+    outs:
+      - reports/promotion.json:
+          cache: false
