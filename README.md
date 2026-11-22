@@ -47,6 +47,25 @@ copy .env.example .env
 
 _À compléter (phase 5) : commande unique `docker compose up --build`._
 
+## Lancer l'API en local
+
+Prérequis : serveur MLflow démarré et modèle `champion` enregistré (`dvc repro`).
+
+```powershell
+uvicorn src.api.main:app --port 8000
+```
+
+Documentation interactive : http://127.0.0.1:8000/docs
+
+| Endpoint | Rôle |
+|---|---|
+| `POST /predict` | Probabilité de défaut pour une demande |
+| `POST /predict/batch` | Jusqu'à 1000 demandes |
+| `GET /health` | Liveness |
+| `GET /ready` | Readiness (modèle chargé) |
+| `GET /model-info` | Version du champion en service |
+| `POST /model/reload` | Recharge le champion après un changement d'alias |
+
 ## Variables d'environnement
 
 Voir [`.env.example`](.env.example). Le fichier `.env` n'est jamais commité.
