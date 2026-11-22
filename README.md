@@ -17,7 +17,15 @@ Chaque membre écrit les tests de son propre code et relit les pull requests de 
 
 ## Architecture
 
-_À compléter (phase 5) : schéma des services mlflow, trainer, api, prometheus, grafana._
+```mermaid
+flowchart LR
+    T[trainer<br/>download, prepare, train, evaluate] -->|runs, modèles, alias champion| M[(MLflow<br/>registre + volume)]
+    M -->|models:/credit-scoring@champion| A[API FastAPI<br/>:8000]
+    C[client] -->|POST /predict| A
+```
+
+Trois services Docker (`mlflow`, `trainer`, `api`). Prometheus et Grafana s'y ajoutent à la phase 6.
+
 
 ## Stack
 
@@ -45,7 +53,22 @@ copy .env.example .env
 
 ## Relancer le pipeline
 
-_À compléter (phase 5) : commande unique `docker compose up --build`._
+Prérequis : Docker Desktop. Aucune autre installation, aucun secret.
+
+```powershell
+git clone https://github.com/achrafelmakaoui/credit-scoring-mlops.git
+cd credit-scoring-mlops
+copy .env.example .env
+docker compose up --build
+```
+
+Équivalents : `.\run.ps1` (Windows) ou `make up` (Linux/macOS).
+
+- Interface MLflow : http://localhost:5000
+- API et documentation : http://localhost:8000/docs
+- Réinitialiser (supprime le registre) : `docker compose down -v`
+
+Le conteneur `trainer` rejoue les mêmes étapes que `dvc.yaml` en téléchargeant les données depuis la source publique UCI. Le versionnage DVC (remote DagsHub) reste le workflow de développement.
 
 ## Lancer l'API en local
 
