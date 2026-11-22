@@ -1,0 +1,23 @@
+FROM python:3.11-slim AS builder
+ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY requirements/mlflow.txt requirements/
+RUN pip install -r requirements/mlflow.txt
+
+FROM python:3.11-slim AS runtime
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PATH="/opt/venv/bin:$PATH"
+# /mlflow appartient à l'utilisateur app : le volume nommé hérite de ces droits
+RUN useradd --create-home --uid 10001 app && mkdir /mlflow && chown app:app /mlflow
+COPY --from=builder /opt/venv /opt/venv
+USER app
+WORKDIR /mlflow
+EXPOSE 5000
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+CMD ["mlflow", "server", \
+     "--host", "0.0.0.0", "--port", "5000", \
+     "--backend-store-uri", "sqlite:////mlflow/mlflow.db", \
+     "--artifacts-destination", "/mlflow/artifacts", \
+     "--serve-artifacts", \
+     "--allowed-hosts", "localhost:5000,127.0.0.1:5000,mlflow:5000"]
