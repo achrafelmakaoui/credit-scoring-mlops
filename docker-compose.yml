@@ -1,0 +1,48 @@
+name: credit-scoring-mlops
+
+services:
+  mlflow:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mlflow
+    image: credit-scoring-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow-data:/mlflow
+    restart: unless-stopped
+
+  trainer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.train
+    image: credit-scoring-trainer
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_EXPERIMENT_NAME: ${MLFLOW_EXPERIMENT_NAME:-credit-scoring}
+      MODEL_NAME: ${MODEL_NAME:-credit-scoring}
+      MODEL_ALIAS: ${MODEL_ALIAS:-champion}
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    image: credit-scoring-api
+    depends_on:
+      trainer:
+        condition: service_completed_successfully
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MODEL_NAME: ${MODEL_NAME:-credit-scoring}
+      MODEL_ALIAS: ${MODEL_ALIAS:-champion}
+      DECISION_THRESHOLD: ${DECISION_THRESHOLD:-0.5}
+    restart: unless-stopped
+
+volumes:
+  mlflow-data:
