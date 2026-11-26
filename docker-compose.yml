@@ -17,6 +17,8 @@ services:
       context: .
       dockerfile: docker/Dockerfile.train
     image: credit-scoring-trainer
+    volumes:
+      - ./data/raw:/app/data/raw
     depends_on:
       mlflow:
         condition: service_healthy

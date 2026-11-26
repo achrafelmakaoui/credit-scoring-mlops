@@ -44,5 +44,8 @@ def download(url: str = URL, output: Path = OUTPUT) -> Path:
 
 
 if __name__ == "__main__":
-    path = download()
-    print(f"Données écrites dans {path}")
+    if OUTPUT.exists():
+        print(f"Données déjà présentes dans {OUTPUT}, téléchargement ignoré")
+    else:
+        path = download()
+        print(f"Données écrites dans {path}")
