@@ -7,7 +7,9 @@ RUN pip install -r requirements/train.txt
 
 FROM python:3.11-slim AS runtime
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PATH="/opt/venv/bin:$PATH"
-RUN useradd --create-home --uid 10001 app && mkdir /app && chown app:app /app
+RUN useradd --create-home --uid 10001 app \
+ && mkdir -p /app/data/raw /app/data/processed /app/reports \
+ && chown -R app:app /app
 COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
 USER app
