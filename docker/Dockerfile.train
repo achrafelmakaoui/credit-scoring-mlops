@@ -1,0 +1,19 @@
+FROM python:3.11-slim AS builder
+ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY requirements/base.txt requirements/train.txt requirements/
+RUN pip install -r requirements/train.txt
+
+FROM python:3.11-slim AS runtime
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PATH="/opt/venv/bin:$PATH"
+RUN useradd --create-home --uid 10001 app \
+ && mkdir -p /app/data/raw /app/data/processed /app/reports \
+ && chown -R app:app /app
+COPY --from=builder /opt/venv /opt/venv
+WORKDIR /app
+USER app
+COPY --chown=app:app src ./src
+COPY --chown=app:app params.yaml dvc.lock ./
+# Mêmes étapes que dvc.yaml ; les données viennent de la source publique UCI (aucun secret requis)
+CMD ["sh", "-c", "python -m src.data.download && python -m src.data.prepare && python -m src.models.train && python -m src.models.evaluate"]
